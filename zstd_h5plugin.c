@@ -60,16 +60,21 @@ error:
 	return 0;
 }
 
-const H5Z_class_t zstd_H5Filter =
-{
-	H5Z_CLASS_T_VERS,
-	(H5Z_filter_t)(ZSTD_FILTER),
-	1, 1,
+const H5Z_class_t zstd_H5Filter[1] = 
+{{
+	H5Z_CLASS_T_VERS,		/* H5Z_class_t version */
+	(H5Z_filter_t)(ZSTD_FILTER),	/* Filter id number    */
+	1,		/* encoder_present flag (set to true) */
+	1,		/* decoder_present flag (set to true) */
 	"Zstandard compression: http://www.zstd.net",
-	NULL, NULL,
+			/* Filter name for debugging    */
+	NULL,		/* The "can apply" callback     */
+	NULL,		/* The "set local" callback     */
 	(H5Z_func_t)(zstd_filter)
-};
+}};
 
+
+#ifndef CBF_FILTER_STATIC
 DLL_EXPORT H5PL_type_t H5PLget_plugin_type(void)
 {
 	return H5PL_TYPE_FILTER;
@@ -77,5 +82,6 @@ DLL_EXPORT H5PL_type_t H5PLget_plugin_type(void)
 
 DLL_EXPORT const void* H5PLget_plugin_info(void)
 {
-	return &zstd_H5Filter;
+	return zstd_H5Filter;
 }
+#endif
